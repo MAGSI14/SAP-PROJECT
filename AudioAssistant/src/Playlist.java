@@ -1,5 +1,6 @@
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 public class Playlist {
     private String nameOfPlaylist;
@@ -38,6 +39,12 @@ public class Playlist {
             total = total.plus(item.getDuration());
         }
         return total;
+    }
+
+    public ArrayList<AudioItem> getSortedPlaylist(){
+        ArrayList<AudioItem> sorted = new ArrayList<>(items);
+        sorted.sort((a,b) -> a.getTitle().compareToIgnoreCase(b.getTitle()));
+        return sorted;
     }
 
     public void printPlaylist() {

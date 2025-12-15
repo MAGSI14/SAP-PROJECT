@@ -1,5 +1,4 @@
 import java.util.*;
-import java.time.Duration;
 
 public class AudioCatalog {
     private ArrayList<AudioItem> items;
@@ -32,11 +31,27 @@ public class AudioCatalog {
         }
     }
 
+    public void removeItem(AudioItem item) throws UnavailableItemException{
+        if(items.contains(item)){
+            items.remove(item);
+        }else{
+            throw new UnavailableItemException("There is no such item in your catalog!");
+        }
+    }
+
     public void addAlbum(Album album) throws DuplicateItemException{
         if(!albums.contains(album)){
             albums.add(album);
         }else{
             throw new DuplicateItemException("This album is already in your catalog!");
+        }
+    }
+
+    public void removeAlbum(Album album) throws UnavailableItemException{
+        if(albums.contains(album)){
+            albums.remove(album);
+        }else {
+            throw new UnavailableItemException("There is no such album in your catalog!");
         }
     }
 
@@ -48,86 +63,109 @@ public class AudioCatalog {
         }
     }
 
-    public ArrayList<AudioItem> searchByName(String name) throws UnavailableItemException{
+    public void removePlaylist(Playlist playlist) throws UnavailableItemException{
+        if(playlists.contains(playlist)){
+            playlists.remove(playlist);
+        }else{
+            throw new UnavailableItemException("There is no such playlist in your catalog!");
+        }
+    }
+    public ArrayList<AudioItem> filterByName(String name){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getTitle().equals(name)){
+            if(i.getTitle().equalsIgnoreCase(name)){
                 found.add(i);
             }
         }
-        if(found.size()>0){
-            return found;
-        }else{
-            throw new UnavailableItemException("There is no such item in your catalog!");
-        }
+        return found;
     }
 
-    public ArrayList<AudioItem> searchByAuthor(String author)throws UnavailableItemException{
+    public ArrayList<AudioItem> filterByAuthor(String author){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getAuthor().equals(author)){
+            if(i.getAuthor().equalsIgnoreCase(author)){
                 found.add(i);
             }
         }
-        if(found.size()>0){
-            return found;
-        }else{
-            throw new UnavailableItemException("There is no such item in your catalog!");
-        }
+        return found;
     }
 
-    public ArrayList<AudioItem> searchByGenre(String genre) throws UnavailableItemException{
+    public ArrayList<AudioItem> filterByGenre(String genre){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getGenre().equals(genre)){
+            if(i.getGenre().equalsIgnoreCase(genre)){
                 found.add(i);
             }
         }
-        if(found.size()>0){
-            return found;
-        }else{
-            throw new UnavailableItemException("There is no such item in your catalog!");
-        }
+        return found;
     }
-    public ArrayList<AudioItem> searchByDuration(String duration) throws UnavailableItemException{
+    public ArrayList<AudioItem> filterByDuration(String duration){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
             if(AudioItem.formatDuration(i.getDuration()).equals(duration)){
                 found.add(i);
             }
         }
-        if(found.size()>0){
-            return found;
-        }else{
-            throw new UnavailableItemException("There is no such item in your catalog!");
-        }
+        return found;
     }
 
-    public ArrayList<AudioItem> searchByCategory(String category) throws UnavailableItemException{
+    public ArrayList<AudioItem> filterByCategory(String category){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getCategory().equals(category)){
+            if(i.getCategory().equalsIgnoreCase(category)){
                 found.add(i);
             }
         }
-        if(found.size()>0){
-            return found;
-        }else{
-            throw new UnavailableItemException("There is no such item in your catalog!");
-        }
+        return found;
     }
 
-    public ArrayList<AudioItem> searchByYear(int year) throws UnavailableItemException{
+    public ArrayList<AudioItem> filterByYear(int year){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
             if(i.getYear() == year){
                 found.add(i);
             }
         }
-        if(found.size()>0){
-            return found;
-        }else{
-            throw new UnavailableItemException("There is no such item in your catalog!");
+        return found;
+    }
+
+    public ArrayList<AudioItem> search(String phrase){
+        ArrayList<AudioItem> found = new ArrayList<>();
+        List<String> splitPhrase = Arrays.asList(phrase.toLowerCase().split("\\s+"));
+        for (AudioItem i:items) {
+            String title = i.getTitle().toLowerCase();
+            String year = String.valueOf(i.getYear());
+            String author = i.getAuthor().toLowerCase();
+            for (String p: splitPhrase) {
+                if(title.contains(p) || author.contains(p) || year.contains(p)){
+                    found.add(i);
+                    break;
+                }
+            }
         }
+        return found;
+    }
+    public ArrayList<AudioItem> getSortedItems(){
+        ArrayList<AudioItem> sorted = new ArrayList<>(items);
+        sorted.sort((a, b) -> {
+            int byTitle = a.getTitle().compareToIgnoreCase(b.getTitle());
+            if (byTitle != 0) {
+                return byTitle;
+            }
+            return a.getAuthor().compareToIgnoreCase(b.getAuthor());
+        });
+        return sorted;
+    }
+
+    public ArrayList<Album> getSortedAlbums(){
+        ArrayList<Album> sorted = new ArrayList<>(albums);
+        sorted.sort((a, b) -> a.getNameOfAlbum().compareToIgnoreCase(b.getNameOfAlbum()));
+        return sorted;
+    }
+
+    public ArrayList<Playlist> getSortedPlaylists(){
+        ArrayList<Playlist> sorted = new ArrayList<>(playlists);
+        sorted.sort((a, b) -> a.getNameOfPlaylist().compareToIgnoreCase(b.getNameOfPlaylist()));
+        return sorted;
     }
 }

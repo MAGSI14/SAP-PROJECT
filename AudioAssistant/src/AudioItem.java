@@ -38,11 +38,11 @@ public abstract class AudioItem {
         return duration;
     }
 
-    public Duration setDuration(Duration duration) throws DurationException{
+    public void setDuration(Duration duration) throws DurationException{
         if(duration.isNegative() || duration.isZero()){
             throw new DurationException("Invalid audio duration!");
         } else {
-            return duration;
+            this.duration = duration;
         }
     }
 

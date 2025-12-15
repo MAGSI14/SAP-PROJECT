@@ -1,14 +1,13 @@
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 public class Album {
     private String nameOfAlbum;
-    private String authorOfAlbum;
     private ArrayList <Song> songs;
 
-    public Album(String nameOfAlbum, String authorOfAlbum, ArrayList<Song> songs) {
+    public Album(String nameOfAlbum, ArrayList<Song> songs) {
         this.nameOfAlbum = nameOfAlbum;
-        this.authorOfAlbum = authorOfAlbum;
         this.songs = songs;
     }
 
@@ -18,14 +17,6 @@ public class Album {
 
     public void setNameOfAlbum(String nameOfAlbum) {
         this.nameOfAlbum = nameOfAlbum;
-    }
-
-    public String getAuthorOfAlbum() {
-        return authorOfAlbum;
-    }
-
-    public void setAuthorOfAlbum(String authorOfAlbum) {
-        this.authorOfAlbum = authorOfAlbum;
     }
 
     public void addSong(Song song) throws DuplicateItemException{
@@ -52,6 +43,11 @@ public class Album {
         return total;
     }
 
+    public ArrayList<Song> getSortedAlbum(){
+        ArrayList<Song> sorted = new ArrayList<>(songs);
+        sorted.sort((a,b) -> a.getTitle().compareToIgnoreCase(b.getTitle()));
+        return sorted;
+    }
     public void printAlbum() {
         System.out.println("Album: " + nameOfAlbum);
         for (Song song : songs) {
@@ -67,13 +63,12 @@ public class Album {
         Album album = (Album) o;
 
         return Objects.equals(nameOfAlbum, album.nameOfAlbum) &&
-                Objects.equals(authorOfAlbum, album.authorOfAlbum) &&
                 Objects.equals(songs, album.songs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nameOfAlbum, authorOfAlbum, songs);
+        return Objects.hash(nameOfAlbum, songs);
     }
 
 }
