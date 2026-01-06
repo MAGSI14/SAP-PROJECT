@@ -1,6 +1,10 @@
+package model;
+
+import exceptions.DuplicateItemException;
+import exceptions.UnavailableItemException;
+
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 public class Playlist {
     private String nameOfPlaylist;
@@ -15,18 +19,14 @@ public class Playlist {
         return nameOfPlaylist;
     }
 
-    public void setNameOfPlaylist(String nameOfPlaylist) {
-        this.nameOfPlaylist = nameOfPlaylist;
-    }
-
-    public void addItem(AudioItem item) throws DuplicateItemException{
+    public void addItem(AudioItem item) throws DuplicateItemException {
         if(!items.contains(item)){
             items.add(item);
         }else{
             throw new DuplicateItemException(String.format("The %s is already in the playlist!", item.getGenre()));
         }
     }
-    public void removeItem(AudioItem item) throws UnavailableItemException{
+    public void removeItem(AudioItem item) throws UnavailableItemException {
         if(items.contains(item)){
             items.remove(item);
         }else{
@@ -47,26 +47,25 @@ public class Playlist {
         return sorted;
     }
 
-    public void printPlaylist() {
-        System.out.println("Playlist: " + nameOfPlaylist);
-        for (AudioItem item : items) {
-            System.out.println(" - " + item.printInfo());
-        }
+    public String printPlaylist() {
+        return String.format(
+                "Playlist: %s | Duration: %s | Number of content: %d",
+                nameOfPlaylist,
+                AudioItem.formatDuration(getTotalDuration()),
+                items.size()
+        );
     }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Playlist playlist = (Playlist) o;
-
-        return Objects.equals(nameOfPlaylist, playlist.nameOfPlaylist) &&
-                Objects.equals(items, playlist.items);
+        if (!(o instanceof Playlist)) return false;
+        Playlist p = (Playlist) o;
+        return nameOfPlaylist.equalsIgnoreCase(p.nameOfPlaylist);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nameOfPlaylist, items);
+        return Objects.hash(nameOfPlaylist.toLowerCase());
     }
 
 }

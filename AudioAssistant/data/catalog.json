@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "type": "Song",
+      "title": "кдскол;с4",
+      "genre": "одсол",
+      "category": "мфолсдм",
+      "author": "пдкцф",
+      "year": 2003,
+      "duration": "01:01"
+    }
+  ],
+  "albums": [
+    {
+      "nameOfAlbum": "дникнс",
+      "songs": [
+        {
+          "title": "кдскол;с4",
+          "genre": "одсол",
+          "duration": "01:01",
+          "category": "мфолсдм",
+          "author": "пдкцф",
+          "year": 2003
+        }
+      ],
+      "genre": "мдфс",
+      "category": "ослмд",
+      "author": "мсодй",
+      "year": 2005
+    }
+  ],
+  "playlists": []
+}

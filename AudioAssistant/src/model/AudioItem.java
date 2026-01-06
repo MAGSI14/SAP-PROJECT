@@ -1,4 +1,10 @@
+package model;
+
+import exceptions.DurationException;
+import exceptions.InvalidYearException;
+
 import java.time.Duration;
+import java.time.Year;
 import java.util.Objects;
 
 public abstract class AudioItem {
@@ -9,7 +15,7 @@ public abstract class AudioItem {
     private String author;
     private int year;
 
-    public AudioItem(String title, String genre, Duration duration, String category, String author, int year) throws InvalidYearException, DurationException{
+    public AudioItem(String title, String genre, Duration duration, String category, String author, int year) throws InvalidYearException, DurationException {
         this.title = title;
         this.genre = genre;
         setDuration(duration);
@@ -50,16 +56,8 @@ public abstract class AudioItem {
         return category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public String getAuthor() {
         return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public int getYear() {
@@ -67,11 +65,11 @@ public abstract class AudioItem {
     }
 
     public void setYear(int year) throws InvalidYearException{
-        if(year >= 1860 && year <= 2025){
+        if(year >= 1860 && year <= Year.now().getValue()){
             this.year = year;
         }else if (year<1860){
             throw new InvalidYearException("You cannot play ooga booga songs! Digital songs had not been invented back then!");
-        }else if(year>2025){
+        }else if(year>Year.now().getValue()){
             throw new InvalidYearException("Oh, doctor Emmet Brown, is this you???");
         }
     }
@@ -85,6 +83,31 @@ public abstract class AudioItem {
         } else {
             return String.format("%02d:%02d", minutes, seconds);
         }
+    }
+
+    public static Duration formatDuration(String s) {
+        if (s == null || s.isBlank()) {
+            throw new IllegalArgumentException("Duration is empty");
+        }
+        String[] parts = s.trim().split(":");
+        try {
+            if (parts.length == 2) {
+                long minutes = Long.parseLong(parts[0]);
+                long seconds = Long.parseLong(parts[1]);
+                return Duration.ofMinutes(minutes).plusSeconds(seconds);
+            }
+            if (parts.length == 3) {
+                long hours = Long.parseLong(parts[0]);
+                long minutes = Long.parseLong(parts[1]);
+                long seconds = Long.parseLong(parts[2]);
+                return Duration.ofHours(hours)
+                        .plusMinutes(minutes)
+                        .plusSeconds(seconds);
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid duration: " + s);
+        }
+        throw new IllegalArgumentException("Invalid duration format: " + s);
     }
 
     @Override

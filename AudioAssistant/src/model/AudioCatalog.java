@@ -1,3 +1,8 @@
+package model;
+
+import exceptions.DuplicateItemException;
+import exceptions.UnavailableItemException;
+
 import java.util.*;
 
 public class AudioCatalog {
@@ -23,7 +28,7 @@ public class AudioCatalog {
         return playlists;
     }
 
-    public void addItem(AudioItem item) throws DuplicateItemException{
+    public void addItem(AudioItem item) throws DuplicateItemException {
         if(!items.contains(item)) {
             items.add(item);
         }else{
@@ -31,7 +36,7 @@ public class AudioCatalog {
         }
     }
 
-    public void removeItem(AudioItem item) throws UnavailableItemException{
+    public void removeItem(AudioItem item) throws UnavailableItemException {
         if(items.contains(item)){
             items.remove(item);
         }else{
@@ -132,12 +137,14 @@ public class AudioCatalog {
     public ArrayList<AudioItem> search(String phrase){
         ArrayList<AudioItem> found = new ArrayList<>();
         List<String> splitPhrase = Arrays.asList(phrase.toLowerCase().split("\\s+"));
-        for (AudioItem i:items) {
+        for (AudioItem i : items) {
             String title = i.getTitle().toLowerCase();
             String year = String.valueOf(i.getYear());
             String author = i.getAuthor().toLowerCase();
-            for (String p: splitPhrase) {
-                if(title.contains(p) || author.contains(p) || year.contains(p)){
+            String genre = i.getGenre().toLowerCase();
+            String category = i.getCategory().toLowerCase();
+            for (String p : splitPhrase) {
+                if (title.contains(p) || author.contains(p) || year.contains(p) || genre.contains(p) || category.contains(p)) {
                     found.add(i);
                     break;
                 }
@@ -145,6 +152,7 @@ public class AudioCatalog {
         }
         return found;
     }
+
     public ArrayList<AudioItem> getSortedItems(){
         ArrayList<AudioItem> sorted = new ArrayList<>(items);
         sorted.sort((a, b) -> {

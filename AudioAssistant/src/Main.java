@@ -1,8 +1,18 @@
-import java.time.Duration;
+import model.AudioCatalog;
+import persistence.CatalogFileRepo;
+import ui.ConsoleUI;
+
 public class Main {
     public static void main(String[] args) {
-        Duration d1 = Duration.ofHours(1).plusMinutes(12).plusSeconds(16).plusMinutes(90);
-
-        System.out.println("Hello world!");
+        CatalogFileRepo repo = new CatalogFileRepo();
+        AudioCatalog catalog;
+        try {
+            catalog = repo.loadCatalog();
+        } catch (Exception e) {
+            System.out.println("Starting with empty catalog (cannot load file).");
+            catalog = new AudioCatalog();
+        }
+        ConsoleUI ui = new ConsoleUI(catalog);
+        ui.start();
     }
 }
