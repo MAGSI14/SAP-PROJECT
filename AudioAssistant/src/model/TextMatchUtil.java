@@ -3,7 +3,6 @@ public class TextMatchUtil {
     public static String normalize(String s) {
         if (s == null) return "";
         s = s.toLowerCase();
-
         s = s.replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit} ]+", " ");
         s = s.replaceAll("\\s+", " ").trim();
         return s;
@@ -54,7 +53,6 @@ public class TextMatchUtil {
         if (s == null) return "";
         StringBuilder out = new StringBuilder();
         String text = s.toLowerCase();
-
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
             switch (ch) {
@@ -114,10 +112,10 @@ public class TextMatchUtil {
         if (normalizedInput.isBlank() || normalizedOutput.isBlank()){
             return false;
         }
-        String inputWordLat = normalize(bgToLat(normalizedInput));
-        String inputWordBg  = normalize(latToBg(normalizedInput));
-        String targetWordsLat = normalize(bgToLat(normalizedOutput));
-        String targetWordsBg  = normalize(latToBg(normalizedOutput));
+        String inputWordLat = bgToLat(normalizedInput);
+        String inputWordBg  = latToBg(normalizedInput);
+        String targetWordsLat = bgToLat(normalizedOutput);
+        String targetWordsBg  = latToBg(normalizedOutput);
 
         for (String word : targetWordsLat.split("\\s+")) {
             if (word.equals(inputWordLat)){
