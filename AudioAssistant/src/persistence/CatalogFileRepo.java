@@ -11,6 +11,7 @@ public class CatalogFileRepo {
 
     private final Gson gson;
     private static final Path CATALOG_PATH = Path.of("data", "catalog.json");
+    private static final Path DATA_DIR = Path.of("data");
 
     public CatalogFileRepo() {
         this.gson = new GsonBuilder()
@@ -53,19 +54,24 @@ public class CatalogFileRepo {
         return catalog;
     }
 
-
-    public void savePlaylist(Playlist playlist, Path path) throws IOException {
-        if (path.getParent() != null) {
-            Files.createDirectories(path.getParent());
-        }
+    public void savePlaylist(Playlist playlist) throws IOException {
+        Files.createDirectories(DATA_DIR);
+        Path path = DATA_DIR.resolve(playlist.getNameOfPlaylist() + ".json");
         String json = gson.toJson(playlist);
         Files.writeString(path, json);
     }
 
 
-    public Playlist loadPlaylist(Path path) throws IOException {
+    public Playlist loadPlaylist(String playlistName) throws IOException {
+        Path path = DATA_DIR.resolve(playlistName + ".json");
         String json = Files.readString(path);
         return gson.fromJson(json, Playlist.class);
+    }
+
+    public boolean deletePlaylistFile(String playlistName) throws IOException {
+        Files.createDirectories(DATA_DIR); // safe, ако папката не съществува
+        Path path = DATA_DIR.resolve(playlistName + ".json");
+        return Files.deleteIfExists(path);
     }
 
 }

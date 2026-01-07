@@ -1,0 +1,23 @@
+{
+  "nameOfPlaylist": "маги",
+  "items": [
+    {
+      "type": "Song",
+      "title": "това на съм аз",
+      "genre": "хип-хоп",
+      "category": "тийн",
+      "author": "атанас колев",
+      "year": 2020,
+      "duration": "04:11"
+    },
+    {
+      "type": "Song",
+      "title": "това съм аз",
+      "genre": "хип-хоп",
+      "category": "тийн",
+      "author": "атанас колев",
+      "year": 2021,
+      "duration": "03:51"
+    }
+  ]
+}

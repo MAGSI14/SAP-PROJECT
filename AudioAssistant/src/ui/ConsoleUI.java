@@ -3,7 +3,6 @@ import exceptions.*;
 import model.*;
 import persistence.CatalogFileRepo;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -34,34 +33,34 @@ public class ConsoleUI {
                         searchObjects();
                         break;
                     case "4":
-                        createPlaylist();
-                        break;
-                    case "5":
                         addObjectToPlaylist();
                         break;
-                    case "6":
+                    case "5":
                         removeObjectFromPlaylist();
                         break;
-                    case "7":
+                    case "6":
                         printInfo();
                         break;
-                    case "8":
+                    case "7":
                         filterObjects();
                         break;
-                    case "9":
+                    case "8":
                         sortAndPrint();
                         break;
-                    case "10":
+                    case "9":
                         saveCatalog();
                         break;
-                    case "11":
+                    case "10":
                         loadCatalog();
                         break;
-                    case "12":
+                    case "11":
                         saveSinglePlaylist();
                         break;
-                    case "13":
+                    case "12":
                         loadSinglePlaylist();
+                        break;
+                    case "X":
+                        printEntireCatalog();
                         break;
                     case "0":
                         System.out.println("Goodbye!");
@@ -76,19 +75,19 @@ public class ConsoleUI {
     }
     private void printMenu() {
         System.out.println("\n=== PERSONAL AUDIO CATALOG ===");
-        System.out.println("1. Add new object (song/podcast/audiobook/album)");
+        System.out.println("1. Add new object (song/podcast/audiobook/album/playlist)");
         System.out.println("2. Delete object");
         System.out.println("3. Search object (title/author/genre/year...)");
-        System.out.println("4. Create playlist");
-        System.out.println("5. Add object to playlist");
-        System.out.println("6. Remove object from playlist");
-        System.out.println("7. Show info (playlist/song/album/item)");
-        System.out.println("8. Filter objects (genre/author/year/category...)");
-        System.out.println("9. Sort objects (all or inside playlist)");
-        System.out.println("10. Save catalog to file");
-        System.out.println("11. Load catalog from file");
-        System.out.println("12. Save single playlist to file");
-        System.out.println("13. Load single playlist from file");
+        System.out.println("4. Add object to playlist");
+        System.out.println("5. Remove object from playlist");
+        System.out.println("6. Show info about a certain object");
+        System.out.println("7. Filter objects (genre/author/year/category...)");
+        System.out.println("8. Sort objects (all or inside playlist/album)");
+        System.out.println("9. Save catalog to file");
+        System.out.println("10. Load catalog from file");
+        System.out.println("11. Save single playlist to file");
+        System.out.println("12. Load single playlist from file");
+        System.out.println("X. Print entire catalog");
         System.out.println("0. Exit");
         System.out.print("> ");
     }
@@ -99,6 +98,7 @@ public class ConsoleUI {
         System.out.println("2. Podcast");
         System.out.println("3. Audiobook");
         System.out.println("4. Album");
+        System.out.println("5. Playlist");
         System.out.print("> ");
         String type = scanner.nextLine().trim();
         if (type.equals("1")) {
@@ -125,6 +125,12 @@ public class ConsoleUI {
             System.out.println("Added album: " + album.printAlbum());
             return;
         }
+        if (type.equals("5")) {
+            Playlist playlist = createPlaylist();
+            catalog.addPlaylist(playlist);
+            System.out.println("Playlist created.");
+            return;
+        }
         System.out.println("Unknown type.");
     }
     private AudioItem createAudioItem(String type) throws Exception {
@@ -149,6 +155,11 @@ public class ConsoleUI {
         }
         throw new Exception("Invalid audio item type.");
     }
+    private Playlist createPlaylist() {
+        String name = ask("Playlist name: ");
+        return new Playlist(name);
+    }
+
     private Album createAlbum() throws Exception {
         System.out.print("Album name: ");
         String name = scanner.nextLine();
@@ -202,7 +213,6 @@ public class ConsoleUI {
         return new Song(title, genre, duration, category, author, year);
     }
 
-
     private void deleteObject() throws Exception {
         System.out.println("\nDelete type:");
         System.out.println("1. Audio item (song/podcast/audiobook) by title");
@@ -212,20 +222,38 @@ public class ConsoleUI {
         String type = scanner.nextLine().trim();
         if (type.equals("1")) {
             AudioItem item = findItemByTitle(ask("Title: "));
-            catalog.removeItem(item);
-            System.out.println("Deleted item.");
+            String answer = ask("Are you sure? Y/N:");
+            if(answer.equalsIgnoreCase("Y")) {
+                catalog.removeItem(item);
+                System.out.println("Deleted item.");
+            }
             return;
         }
         if (type.equals("2")) {
             Album album = findAlbumByName(ask("Album name: "));
-            catalog.removeAlbum(album);
-            System.out.println("Deleted album.");
+            String answer = ask("Are you sure? Y/N:");
+            if(answer.equalsIgnoreCase("Y")) {
+                catalog.removeAlbum(album);
+                System.out.println("Deleted album.");
+            }
             return;
         }
         if (type.equals("3")) {
             Playlist playlist = findPlaylistByName(ask("Playlist name: "));
-            catalog.removePlaylist(playlist);
-            System.out.println("Deleted playlist.");
+            String answer = ask("Are you sure? Y/N:");
+            if(answer.equalsIgnoreCase("Y")) {
+                catalog.removePlaylist(playlist);
+                try {
+                    boolean deleted = fileRepo.deletePlaylistFile(playlist.getNameOfPlaylist());
+                    if (deleted) {
+                        System.out.println("Playlist deleted (and its file was deleted).");
+                    } else {
+                        System.out.println("Playlist deleted (no separate file found).");
+                    }
+                } catch (IOException e) {
+                    System.out.println("Playlist deleted, but file could not be deleted: " + e.getMessage());
+                }
+            }
             return;
         }
         System.out.println("Invalid option.");
@@ -243,12 +271,6 @@ public class ConsoleUI {
         for (AudioItem item : results) {
             System.out.println(item.printInfo());
         }
-    }
-    private void createPlaylist() throws DuplicateItemException {
-        String name = ask("Playlist name: ");
-        Playlist playlist = new Playlist(name);
-        catalog.addPlaylist(playlist);
-        System.out.println("Playlist created.");
     }
 
     private void addObjectToPlaylist() throws Exception {
@@ -289,10 +311,36 @@ public class ConsoleUI {
         }
         System.out.println("Invalid option.");
     }
-
+    private void printEntireCatalog() {
+        System.out.println("\n=== FULL CATALOG ===");
+        System.out.println("\n--- AUDIO ITEMS ---");
+        if (catalog.getItems().isEmpty()) {
+            System.out.println("No audio items.");
+        } else {
+            for (AudioItem item : catalog.getItems()) {
+                System.out.println(item.printInfo());
+            }
+        }
+        System.out.println("\n--- ALBUMS ---");
+        if (catalog.getAlbums().isEmpty()) {
+            System.out.println("No albums.");
+        } else {
+            for (Album album : catalog.getAlbums()) {
+                System.out.println(album.printAlbum());
+            }
+        }
+        System.out.println("\n--- PLAYLISTS ---");
+        if (catalog.getPlaylists().isEmpty()) {
+            System.out.println("No playlists.");
+        } else {
+            for (Playlist playlist : catalog.getPlaylists()) {
+                System.out.println(playlist.printPlaylist());
+            }
+        }
+    }
     private void filterObjects() {
         System.out.println("\nFilter AudioItems by:");
-        System.out.println("1. Name");
+        System.out.println("1. Name/ Title");
         System.out.println("2. Genre");
         System.out.println("3. Author");
         System.out.println("4. Year");
@@ -392,16 +440,17 @@ public class ConsoleUI {
 
     private void saveSinglePlaylist() throws Exception {
         Playlist playlist = findPlaylistByName(ask("Playlist name: "));
-        Path path = Path.of(ask("File path (e.g. data/playlist.json): "));
-        fileRepo.savePlaylist(playlist, path);
-        System.out.println("Playlist saved to file.");
+        fileRepo.savePlaylist(playlist);
+        System.out.println("Playlist saved.");
     }
+
     private void loadSinglePlaylist() throws Exception {
-        Path path = Path.of(ask("File path: "));
-        Playlist playlist = fileRepo.loadPlaylist(path);
+        String name = ask("Playlist name: ");
+        Playlist playlist = fileRepo.loadPlaylist(name);
         catalog.addPlaylist(playlist);
         System.out.println("Playlist loaded and added to catalog.");
     }
+
     private String ask(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine().trim();
@@ -409,7 +458,7 @@ public class ConsoleUI {
 
     private AudioItem findItemByTitle(String title) throws UnavailableItemException {
         for (AudioItem item : catalog.getItems()) {
-            if (item.getTitle().equalsIgnoreCase(title)) {
+            if (TextMatchUtil.equalsCrossScript(title, item.getTitle())) {
                 return item;
             }
         }
@@ -417,7 +466,7 @@ public class ConsoleUI {
     }
     private Playlist findPlaylistByName(String name) throws UnavailableItemException {
         for (Playlist playlist : catalog.getPlaylists()) {
-            if (playlist.getNameOfPlaylist().equalsIgnoreCase(name)) {
+            if (TextMatchUtil.equalsCrossScript(name, playlist.getNameOfPlaylist())) {
                 return playlist;
             }
         }
@@ -425,7 +474,7 @@ public class ConsoleUI {
     }
     private Album findAlbumByName(String name) throws UnavailableItemException {
         for (Album album : catalog.getAlbums()) {
-            if (album.getNameOfAlbum().equalsIgnoreCase(name)) {
+            if (TextMatchUtil.equalsCrossScript(name, album.getNameOfAlbum())) {
                 return album;
             }
         }

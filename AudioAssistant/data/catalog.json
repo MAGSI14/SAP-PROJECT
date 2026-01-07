@@ -2,32 +2,126 @@
   "items": [
     {
       "type": "Song",
-      "title": "кдскол;с4",
-      "genre": "одсол",
-      "category": "мфолсдм",
-      "author": "пдкцф",
-      "year": 2003,
-      "duration": "01:01"
+      "title": "това на съм аз",
+      "genre": "хип-хоп",
+      "category": "тийн",
+      "author": "атанас колев",
+      "year": 2020,
+      "duration": "04:11"
+    },
+    {
+      "type": "Song",
+      "title": "това съм аз",
+      "genre": "хип-хоп",
+      "category": "тийн",
+      "author": "атанас колев",
+      "year": 2021,
+      "duration": "03:51"
+    },
+    {
+      "type": "Podcast",
+      "title": "COMEDY CLUB PODCAST - EP 547",
+      "genre": "развлечение",
+      "category": "to watch",
+      "author": "Иван Кирков",
+      "year": 2025,
+      "duration": "01:52:33"
+    },
+    {
+      "type": "Song",
+      "title": "Get lucky",
+      "genre": "electronic",
+      "category": "old",
+      "author": "Daft Punk",
+      "year": 2013,
+      "duration": "03:21"
+    },
+    {
+      "type": "Song",
+      "title": "Lose yourself to dance",
+      "genre": "electronic",
+      "category": "old",
+      "author": "Daft Punk",
+      "year": 2013,
+      "duration": "03:45"
+    },
+    {
+      "type": "Song",
+      "title": "Instant crush",
+      "genre": "electronic",
+      "category": "old",
+      "author": "Daft Punk",
+      "year": 2013,
+      "duration": "04:02"
+    },
+    {
+      "type": "Song",
+      "title": "Random song",
+      "genre": "N/A",
+      "category": "N/A",
+      "author": "Daft Punk",
+      "year": 2013,
+      "duration": "03:11"
     }
   ],
   "albums": [
     {
-      "nameOfAlbum": "дникнс",
+      "nameOfAlbum": "Random access memories",
       "songs": [
         {
-          "title": "кдскол;с4",
-          "genre": "одсол",
-          "duration": "01:01",
-          "category": "мфолсдм",
-          "author": "пдкцф",
-          "year": 2003
+          "title": "Get lucky",
+          "genre": "electronic",
+          "duration": "03:21",
+          "category": "old",
+          "author": "Daft Punk",
+          "year": 2013
+        },
+        {
+          "title": "Lose yourself to dance",
+          "genre": "electronic",
+          "duration": "03:45",
+          "category": "old",
+          "author": "Daft Punk",
+          "year": 2013
+        },
+        {
+          "title": "Instant crush",
+          "genre": "electronic",
+          "duration": "04:02",
+          "category": "old",
+          "author": "Daft Punk",
+          "year": 2013
         }
       ],
-      "genre": "мдфс",
-      "category": "ослмд",
-      "author": "мсодй",
-      "year": 2005
+      "genre": "електронно",
+      "category": "old ",
+      "author": "Daft Punk",
+      "year": 2013
     }
   ],
-  "playlists": []
+  "playlists": [
+    {
+      "nameOfPlaylist": "маги",
+      "items": [
+        {
+          "type": "Song",
+          "title": "това на съм аз",
+          "genre": "хип-хоп",
+          "category": "тийн",
+          "author": "атанас колев",
+          "year": 2020,
+          "duration": "04:11"
+        },
+        {
+          "type": "Song",
+          "title": "това съм аз",
+          "genre": "хип-хоп",
+          "category": "тийн",
+          "author": "атанас колев",
+          "year": 2021,
+          "duration": "03:51"
+        }
+      ]
+    }
+  ]
 }

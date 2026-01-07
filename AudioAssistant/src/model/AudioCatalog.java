@@ -1,5 +1,4 @@
 package model;
-
 import exceptions.DuplicateItemException;
 import exceptions.UnavailableItemException;
 
@@ -78,7 +77,7 @@ public class AudioCatalog {
     public ArrayList<AudioItem> filterByName(String name){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getTitle().equalsIgnoreCase(name)){
+            if (TextMatchUtil.equalsCrossScript(name, i.getTitle())){
                 found.add(i);
             }
         }
@@ -88,7 +87,8 @@ public class AudioCatalog {
     public ArrayList<AudioItem> filterByAuthor(String author){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getAuthor().equalsIgnoreCase(author)){
+            if (TextMatchUtil.containsCrossScript(author, i.getAuthor()))
+            {
                 found.add(i);
             }
         }
@@ -98,7 +98,7 @@ public class AudioCatalog {
     public ArrayList<AudioItem> filterByGenre(String genre){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getGenre().equalsIgnoreCase(genre)){
+            if (TextMatchUtil.equalsCrossScript(genre, i.getGenre())){
                 found.add(i);
             }
         }
@@ -117,7 +117,7 @@ public class AudioCatalog {
     public ArrayList<AudioItem> filterByCategory(String category){
         ArrayList<AudioItem> found = new ArrayList<>();
         for (AudioItem i: items) {
-            if(i.getCategory().equalsIgnoreCase(category)){
+            if (TextMatchUtil.equalsCrossScript(category, i.getCategory())){
                 found.add(i);
             }
         }
@@ -134,20 +134,23 @@ public class AudioCatalog {
         return found;
     }
 
-    public ArrayList<AudioItem> search(String phrase){
+    public ArrayList<AudioItem> search(String phrase) {
         ArrayList<AudioItem> found = new ArrayList<>();
-        List<String> splitPhrase = Arrays.asList(phrase.toLowerCase().split("\\s+"));
-        for (AudioItem i : items) {
-            String title = i.getTitle().toLowerCase();
-            String year = String.valueOf(i.getYear());
-            String author = i.getAuthor().toLowerCase();
-            String genre = i.getGenre().toLowerCase();
-            String category = i.getCategory().toLowerCase();
-            for (String p : splitPhrase) {
-                if (title.contains(p) || author.contains(p) || year.contains(p) || genre.contains(p) || category.contains(p)) {
-                    found.add(i);
+        String normalized = TextMatchUtil.normalize(phrase);
+        if (normalized.isBlank()) return found;
+        String[] tokens = normalized.split("\\s+");
+        for (AudioItem item : items) {
+            String record = item.getTitle() + " " + item.getAuthor() + " " + item.getYear() + " " + item.getGenre() + " " + item.getCategory();
+
+            boolean allMatch = true;
+            for (String token : tokens) {
+                if (!TextMatchUtil.containsCrossScript(token, record)) {
+                    allMatch = false;
                     break;
                 }
+            }
+            if (allMatch) {
+                found.add(item);
             }
         }
         return found;
@@ -176,4 +179,5 @@ public class AudioCatalog {
         sorted.sort((a, b) -> a.getNameOfPlaylist().compareToIgnoreCase(b.getNameOfPlaylist()));
         return sorted;
     }
+
 }

@@ -1,8 +1,6 @@
 package persistence;
-
 import com.google.gson.*;
 import model.*;
-
 import java.lang.reflect.Type;
 import java.time.Duration;
 

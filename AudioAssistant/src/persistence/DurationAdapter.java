@@ -8,7 +8,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import java.time.Duration;
-
 import model.AudioItem;
 
 public class DurationAdapter implements JsonSerializer<Duration>, JsonDeserializer<Duration> {

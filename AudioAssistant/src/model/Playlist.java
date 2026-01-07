@@ -1,8 +1,6 @@
 package model;
-
 import exceptions.DuplicateItemException;
 import exceptions.UnavailableItemException;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Objects;
